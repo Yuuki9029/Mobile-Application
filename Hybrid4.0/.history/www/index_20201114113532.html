@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        
+        
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        -->
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="css/index.css">
+        <link rel="stylesheet" href = "https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+        <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="cordova.js"></script>
+        <script src="js/index.js"></script>
+        <script type="text/javascript" src="js/handleDatabase.js"></script>
+        <script type="text/javascript" src="js/handleProduct.js"></script>
+        <title>Restaurant rating app</title>
+    </head>
+    <body>
+        <div data-role="page" id="addpage">
+            <div data-role="panel" id="addPagePanel">
+                <h1>Menu</h1>
+                <ul data-role="listview" data-inset="true">
+                    <li data-role="list-divider">Product</li>
+                    <li data-icon="plus"><a href="#addpage">Add</a></li>
+                    <li data-icon="grid"><a href="#loadpage">Load</a></li>
+                </ul>
+            </div>
+            <div data-role="header" data-position="fixed">
+                <a href="#addPagePanel"
+                   class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all ui-shadow"></a>
+                <h1>Add product</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <form>
+                    <div class="ui-field-contain">
+                        <label for="resNameInput">Restaurant Name:</label>
+                        <input type="text" id="resNameInput" data-clear-btn="true"/>
+                        <label for="resTypeInput">Restaurant Type:</label>
+                        <input type="text" id="resTypeInput" data-clear-btn="true"/>
+                        <label for="dateVisitInput">Date of the visit:</label>
+                        <input type="text" id="dateVisitInput" data-clear-btn="true"/>
+                        <label for="avgPriceInput">Avegare Price of the meal:</label>
+                        <input type="text" id="avgPriceInput" data-clear-btn="true"/>
+                        <label for="serRateInput">Service Rating:</label>
+                        <input type="text" id="serRateInput" data-clear-btn="true"/>
+                        <label for="cleanRateInput">Cleanliness Rating:</label>
+                        <input type="text" id="cleanRateInput" data-clear-btn="true"/>
+                        <label for="foodRateInput">Food Rating:</label>
+                        <input type="text" id="foodRateInput" data-clear-btn="true"/>
+                        <label for="notesInput">Notes:</label>
+                        <input type="text" id="notesInput" data-clear-btn="true"/>
+                        <label for="reporterInput">Reporter:</label>
+                        <input type="text" id="reporterInput" data-clear-btn="true"/>
+                        <label for="btnAdd"></label>
+                        <a class="ui-btn ui-icon-plus ui-btn-icon-left"
+                           id="btnAdd" onclick="addProduct()">Add</a>
+                    </div>
+                </form>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div data-role="navbar">
+                    <ul>
+                        <li data-icon="plus"><a href="#addpage" class="ui-btn-active ui-state-persist">Add</a></li>
+                        <li data-icon="grid"><a href="#loadpage">Load</a></li>
+                    </ul>
+                </div>
+                <h1>IRate - copyright@2020</h1>
+            </div>
+        </div>
+        <div data-role="page" id="loadpage">
+            <div data-role="panel" id="loadPagePanel">
+                <h1>Menu</h1>
+                <ul data-role="listview" data-inset="true">
+                    <li data-role="list-divider">Restaurant Rating</li>
+                    <li data-icon="plus"><a href="#addpage">New Rating</a></li>
+                    <li data-icon="grid"><a href="#loadpage">Rating List</a></li>
+                </ul>
+            </div>
+            <div data-role="header" data-position="fixed">
+                <a href="#loadPagePanel"
+                   class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all ui-shadow"></a>
+                <h1>Rating List</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <form class="ui-filterable">
+                    <input data-type="search" id="keyword"/>
+                </form>
+                <ul data-role="listview" data-filter="true"
+                    data-input="#keyword"
+                    data-inset="true"
+                    id="ratingList"
+                >
+                </ul>
+                <div data-role="popup" id="popupUpdateDelete">
+                    <div data-role="header">
+                        <a class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all" data-rel="back"></a>
+                        <h1>Options</h1>
+                    </div>
+                    <div data-role="main" class="ui-content">
+                        <a class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline"
+                           onclick="deleteProduct()"
+                        >Delete</a>
+                        <a class="ui-btn ui-icon-edit ui-btn-icon-left ui-btn-inline"
+                           href="#updatedialog"
+                        >Update</a>
+                    </div>
+                </div>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div data-role="navbar">
+                    <ul>
+                        <li data-icon="plus"><a href="#addpage" >Add</a></li>
+                        <li data-icon="grid"><a href="#loadpage" class="ui-btn-active ui-state-persist">Load</a></li>
+                    </ul>
+                </div>
+                <h1>IRate - copyright@2020</h1>
+            </div>
+        </div>
+        <div data-role="dialog" id="updatedialog">
+            <div data-role="header">
+                <h1>Update product</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <form>
+                    <div class="ui-field-contain">
+                        <label for="newResName">Restaurant Name:</label>
+                        <input type="text" id="newResName" data-clear-btn="true"/>
+                        <label for="newResType">Restaurant Type:</label>
+                        <input type="number" id="newResType" data-clear-btn="true"/>
+                        <label for="btnUpdate"></label>
+                        <a class="ui-btn ui-icon-plus ui-btn-icon-left"
+                           id="btnUpdate" onclick="updateProduct()">Update</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

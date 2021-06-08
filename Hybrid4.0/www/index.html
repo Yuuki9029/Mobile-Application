@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <link rel="stylesheet" href="css/index.css">
+        <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+        <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="cordova.js"></script>
+        <script src="js/index.js"></script>
+        <script type="text/javascript" src="js/Database.js"></script>
+        <script type="text/javascript" src="js/handleRating.js"></script>
+        <link rel="stylesheet" href="./css/main.css">
+        <title>Restaurant</title>
+    </head>
+    <body>
+        <div data-role="page" id="home">
+            <div data-role="header" class="position-header">
+                <h1>i-Rate</h1>
+            </div>
+            <div role="main" class="ui-content">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#addpage">Add</a></li>
+                    <li><a href="#loadpage">Load</a></li>
+                </ul>
+            </div>
+                <p>
+                    Restaurant Rating App
+                </p>
+            </div>
+            <div data-role="footer">
+                <h4>Author: Yuuki</h4>
+            </div>
+        </div>
+        <div data-role="page" id="addpage">
+            <div data-role="panel" id="addPagePanel">
+                <h1>Menu</h1>
+                <ul data-role="listview" data-inset="true">
+                    <li data-role="list-divider">Survey</li>
+                    <li><a href="#home">Home</a></li>
+                    <li data-icon="plus"><a href="#addpage">Add</a></li>
+                    <li data-icon="grid"><a href="#loadpage">Load</a></li>
+                </ul>
+            </div>
+            <div data-role="header" data-position="fixed">
+                <a href="#addPagePanel"
+                class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all ui-shadow"></a>
+                <h1>Add Rating</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <form>
+                    <div class="ui-field-contain">
+                        <label for="Name">Restaurant Name: <span>*</span></label>
+                        <input type="text" id="Name" data-clear-btn="true"/>
+                        <label for="Type">Restaurant Type: <span>*</span></label>
+                        <select name="TypeInput" id="Type">
+                            <option value="none" selected disabled hidden> 
+                                Select an Option 
+                            </option>
+                            <option value="Grill ">Grill </option>
+                            <option value="Fast food ">Fast food</option>
+                            <option value="Sea food">Sea food</option>
+                        </select>
+                        <label for="date">Date of the visit: <span>*</span></label>
+                        <input type="date" id="date" name="date" data-clear-btn="true"/>
+                        <script src="./js/validatedate.js"></script>
+                        <label for="avgPrice">Avegare Price of the meal: <span>*</span></label>
+                        <input type="number" id="avgPrice" data-clear-btn="true" maxlength="20" min="0" />
+                        <label for="serRateInput">Service Rating: <span>*</span></label>
+                        <select name="serRateInput" id="serRateInput">
+                            <option value="none" selected disabled hidden> 
+                                Select an Option 
+                            </option>
+                            <option value="1">OKAY</option>
+                            <option value="2">Good</option>
+                            <option value="3">Excellent</option>
+                        </select>
+                        <label for="cleanRate">Cleanliness Rating: <span>*</span></label>
+                        <select name="cleanRate" id="cleanRate">
+                            <option value="none" selected disabled hidden> 
+                                Select an Option 
+                            </option>
+                            <option value="1">OKAY</option>
+                            <option value="2">Good</option>
+                            <option value="3">Excellent</option>
+                        </select>
+                        <label for="foodRate">Food Rating: <span>*</span></label>
+                        <select name="foodRate" id="foodRate" >
+                            <option value="none" selected disabled hidden> 
+                                Select an Option 
+                            </option>
+                            <option value="1">OKAY</option>
+                            <option value="2">Good</option>
+                            <option value="3">Excellent</option>
+                        </select>
+                        <label for="notes">Notes:</label>
+                        <input type="text" id="notes" data-clear-btn="true"/>
+                        <label for="reporter">Reporter: <span>*</span></label>
+                        <input type="text" id="reporter" data-clear-btn="true"/>
+                        <label for="btnAdd"></label>
+                        <a class="ui-btn ui-icon-plus ui-btn-icon-left"
+                        id="btnAdd" onclick="addRating()">Add</a>
+                    </div>
+                </form>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <h4>Author: Yuuki</h4>
+            </div>
+        </div>
+        <div data-role="page" id="loadpage">
+            <div data-role="panel" id="loadPagePanel">
+                <h1>Menu</h1>
+                <ul data-role="listview" data-inset="true">
+                    <li data-role="list-divider">Survey</li>
+                    <li><a href="#home">Home</a></li>
+                    <li data-icon="plus"><a href="#addpage">Add</a></li>
+                    <li data-icon="grid"><a href="#loadpage">Load</a></li>
+                </ul>
+            </div>
+            <div data-role="header" data-position="fixed">
+                <a href="#loadPagePanel"
+                class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all ui-shadow"></a>
+                <h1>List Rating</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <form class="ui-filterable">
+                    <input data-type="search" id="keyword"/>
+                </form>
+                <ul data-role="listview" data-filter="true"
+                    data-input="#keyword"
+                    data-inset="true"
+                    id="ratingList"
+                >
+                </ul>
+                <div data-role="popup" id="popupUpdateDelete">
+                    <div data-role="header">
+                        <a class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all" data-rel="back"></a>
+                        <h1>Options</h1>
+                    </div>
+                    <div data-role="main" class="ui-content">
+                        <a class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline"
+                        onclick="deleteRating()"
+                        >Delete</a>
+                        <a class="ui-btn ui-icon-edit ui-btn-icon-left ui-btn-inline"
+                        href="#updatedialog"
+                        >Update</a>
+                    </div>
+                </div>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <h4>Author: Yuuki</h4>
+            </div>
+        </div>
+        <div data-role="dialog" id="updatedialog">
+            <div data-role="header">
+                <h1>Update Rating</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <form>
+                    <form>
+                        <div class="ui-field-contain">
+                            <label for="newAvgPrice">Avegare Price of the meal:</label>
+                        <input type="number" id="newAvgPrice" data-clear-btn="true" required/>
+                        <label for="newSerRate">Service Rating:</label>
+                        <select name="newSerRate" id="newSerRate" required>
+                            <option value="1">OKAY</option>
+                            <option value="2">Good</option>
+                            <option value="3">Excellent</option>
+                        </select>
+                        <label for="newCleanRate">Cleanliness Rating:</label>
+                        <select name="newCleanRate" id="newCleanRate" required>
+                            <option value="1">OKAY</option>
+                            <option value="2">Good</option>
+                            <option value="3">Excellent</option>
+                        </select>
+                        <label for="newFoodRate">Food Rating:</label>
+                        <select name="newFoodRateInput" id="newFoodRate" required>
+                            <option value="1">OKAY</option>
+                            <option value="2">Good</option>
+                            <option value="3">Excellent</option>
+                        </select>
+                            <label for="newNotes">Notes:</label>
+                            <input type="text" id="newNotes" data-clear-btn="true"/>
+                            <label for="btnUpdate"></label>
+                            <a class="ui-btn ui-icon-plus ui-btn-icon-left"
+                            id="btnUpdate" onclick="updateRating()">Update</a>
+                        </div>
+                    </form>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
